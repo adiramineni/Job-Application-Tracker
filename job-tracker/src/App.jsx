@@ -1,11 +1,21 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 function App() {
   const [company, setCompany] = useState("");
   const [role, setRole] = useState("");
   const [status, setStatus] = useState("Applied");
 
-  const [applications, setApplications] = useState([]);
+   const [applications, setApplications] = useState(() => {
+  const savedData = localStorage.getItem("applications");
+  return savedData ? JSON.parse(savedData) : [];
+}); 
+
+ useEffect(() => {
+  localStorage.setItem(
+    "applications",
+    JSON.stringify(applications)
+  );
+}, [applications]);
 
   const addApplication = () => {
     const newApplication = {
@@ -14,8 +24,11 @@ function App() {
       status,
     };
 
-    setApplications([...applications, newApplication]);
-
+   setApplications([
+  ...applications,
+  newApplication,
+]);
+   
     setCompany("");
     setRole("");
     setStatus("Applied");
